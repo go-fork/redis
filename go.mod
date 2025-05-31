@@ -3,10 +3,10 @@ module go.fork.vn/redis
 go 1.23.9
 
 require (
-	go.fork.vn/di v0.1.0
-	go.fork.vn/config v0.1.0
 	github.com/redis/go-redis/v9 v9.8.0
 	github.com/stretchr/testify v1.10.0
+	go.fork.vn/config v0.1.0
+	go.fork.vn/di v0.1.0
 )
 
 require (

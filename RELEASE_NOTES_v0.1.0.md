@@ -68,7 +68,7 @@ import "go.fork.vn/redis"
 ### Update Import Statements
 **Old:**
 ```go
-import "github.com/go-fork/providers/redis"
+import "go.fork.vn/redis"
 ```
 
 **New:**
