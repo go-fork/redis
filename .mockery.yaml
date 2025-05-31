@@ -1,0 +1,12 @@
+with-expecter: true
+keeptree: true
+dir: mocks
+outpkg: mocks
+filename: "{{.InterfaceName}}.go"
+packages:
+  go.fork.vn/redis:
+    interfaces:
+      Manager:
+        config:
+          recursive: true
+all: false
