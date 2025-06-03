@@ -33,46 +33,50 @@ func NewServiceProvider() ServiceProvider {
 // "redis.client" và "redis.universal".
 //
 // Params:
-//   - app: Interface của ứng dụng, phải cung cấp phương thức Container() để lấy container DI
-func (p *serviceProvider) Register(app interface{}) {
-	// Lấy container từ app
-	if appWithContainer, ok := app.(interface {
-		Container() *di.Container
-	}); ok {
-		c := appWithContainer.Container()
+//   - app: Interface di.Application chứa container DI
+func (p *serviceProvider) Register(app di.Application) {
+	if app == nil {
+		panic("application cannot be nil")
+	}
 
-		// Kiểm tra xem container có tồn tại không
-		if c == nil {
-			// Không làm gì khi không có container
-			return
-		}
+	c := app.Container()
+	if c == nil {
+		panic("container cannot be nil")
+	}
 
-		// Kiểm tra xem container đã có config manager chưa
-		redisConfig := DefaultConfig()
-		configService := c.MustMake("config").(config.Manager)
-		if configService == nil {
-			panic("Redis provider requires config service to be registered")
-		}
-		err := configService.UnmarshalKey("redis", &redisConfig)
-		if err != nil {
-			panic("Redis config unmarshal error: " + err.Error())
-		}
+	// Kiểm tra xem container đã có config manager chưa
+	redisConfig := DefaultConfig()
+	configService := c.MustMake("config").(config.Manager)
+	if configService == nil {
+		panic("Redis provider requires config service to be registered")
+	}
+	err := configService.UnmarshalKey("redis", &redisConfig)
+	if err != nil {
+		panic("Redis config unmarshal error: " + err.Error())
+	}
 
-		manager := NewManagerWithConfig(redisConfig)
+	manager := NewManager(redisConfig)
 
+	// Luôn đăng ký manager để người dùng có thể cấu hình và khởi tạo client sau này nếu cần
+	c.Instance("redis", manager)
+	p.providers = append(p.providers, "redis")
+
+	// Chỉ đăng ký Redis client khi nó được bật
+	if redisConfig.Client != nil && redisConfig.Client.Enabled {
 		client, err := manager.Client()
 		if err == nil {
 			c.Instance("redis.client", client)
 			p.providers = append(p.providers, "redis.client")
 		}
+	}
 
+	// Chỉ đăng ký Redis Universal client khi nó được bật
+	if redisConfig.Universal != nil && redisConfig.Universal.Enabled {
 		universalClient, err := manager.UniversalClient()
 		if err == nil {
 			c.Instance("redis.universal", universalClient)
 			p.providers = append(p.providers, "redis.universal")
 		}
-		c.Instance("redis.manager", manager)
-		p.providers = append(p.providers, "redis")
 	}
 }
 
@@ -83,8 +87,8 @@ func (p *serviceProvider) Register(app interface{}) {
 // đã được xử lý trong Register.
 //
 // Params:
-//   - app: Interface của ứng dụng
-func (p *serviceProvider) Boot(app interface{}) {
+//   - app: Interface di.Application chứa container DI
+func (p *serviceProvider) Boot(app di.Application) {
 	// Không cần thực hiện thêm tác vụ nào trong Boot
 	// vì cấu hình đã được xử lý trong Register
 	if app == nil {

@@ -16,13 +16,10 @@ type Manager interface {
 	Client() (*redis.Client, error)
 
 	// UniversalClient trả về một Redis Universal Client mới hoặc đã lưu trong cache.
-	UniversalClient() (redis.UniversalClient, error)
+	UniversalClient() (*redis.UniversalClient, error)
 
 	// GetConfig trả về cấu hình hiện tại của Manager.
 	GetConfig() *Config
-
-	// SetConfig đặt cấu hình cho Manager.
-	SetConfig(config *Config)
 
 	// Close đóng tất cả các kết nối Redis.
 	Close() error
@@ -42,12 +39,7 @@ type manager struct {
 }
 
 // NewManager tạo một Manager mới với cấu hình mặc định.
-func NewManager() Manager {
-	return NewManagerWithConfig(DefaultConfig())
-}
-
-// NewManagerWithConfig tạo một Manager mới với cấu hình tùy chỉnh.
-func NewManagerWithConfig(config *Config) Manager {
+func NewManager(config *Config) Manager {
 	return &manager{
 		config: config,
 	}
@@ -61,6 +53,10 @@ func (m *manager) Client() (*redis.Client, error) {
 
 	if m.config.Client == nil {
 		return nil, fmt.Errorf("redis client configuration is missing")
+	}
+
+	if !m.config.Client.Enabled {
+		return nil, fmt.Errorf("redis client is disabled in configuration")
 	}
 
 	options := m.config.Client.GetClientOptions()
@@ -79,13 +75,17 @@ func (m *manager) Client() (*redis.Client, error) {
 }
 
 // UniversalClient trả về một Redis Universal Client mới hoặc đã lưu trong cache.
-func (m *manager) UniversalClient() (redis.UniversalClient, error) {
+func (m *manager) UniversalClient() (*redis.UniversalClient, error) {
 	if m.universalClient != nil {
-		return m.universalClient, nil
+		return (*redis.UniversalClient)(&m.universalClient), nil
 	}
 
 	if m.config.Universal == nil {
 		return nil, fmt.Errorf("redis universal client configuration is missing")
+	}
+
+	if !m.config.Universal.Enabled {
+		return nil, fmt.Errorf("redis universal client is disabled in configuration")
 	}
 
 	options := m.config.Universal.GetUniversalOptions()
@@ -105,28 +105,12 @@ func (m *manager) UniversalClient() (redis.UniversalClient, error) {
 		RouteRandomly:   options.RouteRandomly,
 	})
 
-	return m.universalClient, nil
+	return (*redis.UniversalClient)(&m.universalClient), nil
 }
 
 // GetConfig trả về cấu hình hiện tại của Manager.
 func (m *manager) GetConfig() *Config {
 	return m.config
-}
-
-// SetConfig đặt cấu hình cho Manager.
-func (m *manager) SetConfig(config *Config) {
-	m.config = config
-
-	// Reset các client hiện tại để chúng sẽ được tạo lại với cấu hình mới
-	if m.client != nil {
-		m.client.Close()
-		m.client = nil
-	}
-
-	if m.universalClient != nil {
-		m.universalClient.Close()
-		m.universalClient = nil
-	}
 }
 
 // Close đóng tất cả các kết nối Redis.
@@ -172,6 +156,6 @@ func (m *manager) ClusterPing(ctx context.Context) error {
 		return err
 	}
 
-	_, err = client.Ping(ctx).Result()
+	_, err = (*client).Ping(ctx).Result()
 	return err
 }

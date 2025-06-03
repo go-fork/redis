@@ -1,6 +1,7 @@
 redis:
   # Standard client configuration
   client:
+    enabled: true
     host: localhost
     port: 6379
     password: ""
@@ -15,6 +16,7 @@ redis:
   
   # Universal client configuration (for cluster/sentinel/standalone)
   universal:
+    enabled: false
     addresses:
       - localhost:6379
     password: ""

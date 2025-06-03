@@ -16,6 +16,9 @@ type Config struct {
 
 // ClientConfig chứa cấu hình cho Redis Standard Client.
 type ClientConfig struct {
+	// Enabled xác định liệu Redis Standard Client có được kích hoạt hay không.
+	Enabled bool `mapstructure:"enabled"`
+
 	// Host là địa chỉ máy chủ Redis.
 	Host string `mapstructure:"host"`
 
@@ -52,6 +55,9 @@ type ClientConfig struct {
 
 // UniversalConfig chứa cấu hình cho Redis Universal Client.
 type UniversalConfig struct {
+	// Enabled xác định liệu Redis Universal Client có được kích hoạt hay không.
+	Enabled bool `mapstructure:"enabled"`
+
 	// Addresses là danh sách các địa chỉ máy chủ Redis (host:port)
 	Addresses []string `mapstructure:"addresses"`
 
@@ -108,6 +114,7 @@ type UniversalConfig struct {
 func DefaultConfig() *Config {
 	return &Config{
 		Client: &ClientConfig{
+			Enabled:      false,
 			Host:         "localhost",
 			Port:         6379,
 			Password:     "",
@@ -121,6 +128,7 @@ func DefaultConfig() *Config {
 			MinIdleConns: 5,
 		},
 		Universal: &UniversalConfig{
+			Enabled:         false,
 			Addresses:       []string{"localhost:6379"},
 			Password:        "",
 			DB:              0,
@@ -140,6 +148,35 @@ func DefaultConfig() *Config {
 			MasterName:      "mymaster",
 		},
 	}
+}
+
+// ClientOptions là wrapper cho Redis Client Options.
+type ClientOptions struct {
+	Addr         string
+	Password     string
+	DB           int
+	DialTimeout  time.Duration
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+	PoolSize     int
+	MinIdleConns int
+}
+
+// UniversalOptions là wrapper cho Redis Universal Client Options.
+type UniversalOptions struct {
+	Addrs           []string
+	MasterName      string
+	Password        string
+	DB              int
+	DialTimeout     time.Duration
+	ReadTimeout     time.Duration
+	WriteTimeout    time.Duration
+	MaxRetries      int
+	MinRetryBackoff time.Duration
+	MaxRetryBackoff time.Duration
+	PoolSize        int
+	MinIdleConns    int
+	RouteRandomly   bool
 }
 
 // GetClientOptions trả về Redis Client Options từ cấu hình.
@@ -173,33 +210,4 @@ func (c *UniversalConfig) GetUniversalOptions() *UniversalOptions {
 		RouteRandomly:   true,
 		MasterName:      c.MasterName,
 	}
-}
-
-// ClientOptions là wrapper cho Redis Client Options.
-type ClientOptions struct {
-	Addr         string
-	Password     string
-	DB           int
-	DialTimeout  time.Duration
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
-	PoolSize     int
-	MinIdleConns int
-}
-
-// UniversalOptions là wrapper cho Redis Universal Client Options.
-type UniversalOptions struct {
-	Addrs           []string
-	MasterName      string
-	Password        string
-	DB              int
-	DialTimeout     time.Duration
-	ReadTimeout     time.Duration
-	WriteTimeout    time.Duration
-	MaxRetries      int
-	MinRetryBackoff time.Duration
-	MaxRetryBackoff time.Duration
-	PoolSize        int
-	MinIdleConns    int
-	RouteRandomly   bool
 }

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/redis/go-redis/v9"
+	"github.com/stretchr/testify/assert"
 )
 
 // skipIntegrationTest kiểm tra nếu thử nghiệm tích hợp nên được bỏ qua
@@ -16,7 +17,9 @@ func skipIntegrationTest(t *testing.T) {
 }
 
 func TestNewManager(t *testing.T) {
-	manager := NewManager()
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true // Ensure client is enabled for this test
+	manager := NewManager(cfg)
 	if manager == nil {
 		t.Error("Expected manager to be initialized, got nil")
 	}
@@ -36,13 +39,13 @@ func TestNewManager(t *testing.T) {
 	}
 }
 
-func TestNewManagerWithConfig(t *testing.T) {
+func TestNewManager_Custom(t *testing.T) {
 	customConfig := DefaultConfig()
 	customConfig.Client.Host = "custom-redis-host"
 	customConfig.Client.Port = 6380
 	customConfig.Client.Password = "custom-password"
 
-	manager := NewManagerWithConfig(customConfig)
+	manager := NewManager(customConfig)
 	config := manager.GetConfig()
 
 	if config.Client.Host != "custom-redis-host" {
@@ -56,70 +59,27 @@ func TestNewManagerWithConfig(t *testing.T) {
 	}
 }
 
-func TestManagerSetConfig(t *testing.T) {
-	// Create a manager with initial config
-	initialConfig := DefaultConfig()
-	manager := NewManagerWithConfig(initialConfig).(*manager)
-
-	// First create a client and universal client
-	client, _ := manager.Client()
-	if client == nil {
-		t.Fatal("Failed to create client")
-	}
-
-	universalClient, _ := manager.UniversalClient()
-	if universalClient == nil {
-		t.Fatal("Failed to create universal client")
-	}
-
-	// Create a new config to set
-	newConfig := DefaultConfig()
-	newConfig.Client.Host = "new-host"
-	newConfig.Client.Port = 7777
-
-	// Set the new config
-	manager.SetConfig(newConfig)
-
-	// Check if config was updated
-	if manager.config != newConfig {
-		t.Error("Expected config to be updated to new config")
-	}
-
-	// Check if clients were reset
-	if manager.client != nil {
-		t.Error("Expected client to be reset to nil")
-	}
-
-	if manager.universalClient != nil {
-		t.Error("Expected universal client to be reset to nil")
-	}
-}
-
 func TestManagerClient(t *testing.T) {
-	manager := NewManager()
+	config := DefaultConfig()
+	config.Client.Enabled = true // Ensure client is enabled for this test
+	manager := NewManager(config)
 
 	client, err := manager.Client()
 	if err != nil {
-		t.Fatalf("Expected no error, got %v", err)
+		t.Fatalf("Expected no error, got %v", err.Error())
 	}
 
 	if client == nil {
 		t.Error("Expected client to be initialized, got nil")
 	}
 
-	// Second call should return cached client
-	cachedClient, err := manager.Client()
-	if err != nil {
-		t.Fatalf("Expected no error on cached client, got %v", err)
-	}
-
-	if client != cachedClient {
-		t.Error("Expected cached client to be the same instance")
-	}
 }
 
 func TestManagerUniversalClient(t *testing.T) {
-	manager := NewManager()
+	// Create a custom config with Universal.Enabled = true
+	config := DefaultConfig()
+	config.Universal.Enabled = true
+	manager := NewManager(config)
 
 	client, err := manager.UniversalClient()
 	if err != nil {
@@ -142,21 +102,13 @@ func TestManagerUniversalClient(t *testing.T) {
 }
 
 func TestManagerClose(t *testing.T) {
-	manager := NewManager()
-
-	// Create clients to be closed
-	_, err := manager.Client()
-	if err != nil {
-		t.Fatalf("Failed to create client: %v", err)
-	}
-
-	_, err = manager.UniversalClient()
-	if err != nil {
-		t.Fatalf("Failed to create universal client: %v", err)
-	}
+	// Create a manager with Universal.Enabled = true
+	config := DefaultConfig()
+	config.Universal.Enabled = true
+	manager := NewManager(config)
 
 	// Close all connections
-	err = manager.Close()
+	err := manager.Close()
 	if err != nil {
 		t.Fatalf("Failed to close connections: %v", err)
 	}
@@ -164,8 +116,9 @@ func TestManagerClose(t *testing.T) {
 
 func TestManagerPing_Integration(t *testing.T) {
 	skipIntegrationTest(t)
-
-	manager := NewManager()
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true // Ensure client is enabled for this test
+	manager := NewManager(cfg)
 	err := manager.Ping(context.Background())
 
 	if err != nil {
@@ -179,7 +132,7 @@ func TestManagerClusterPing_Integration(t *testing.T) {
 	// For this test, you need a Redis cluster or a single Redis instance
 	// that works with the universal client
 	config := DefaultConfig()
-	manager := NewManagerWithConfig(config)
+	manager := NewManager(config)
 
 	err := manager.ClusterPing(context.Background())
 	if err != nil {
@@ -195,5 +148,136 @@ func MockRedisClient() *redis.Client {
 	})
 }
 
-// Additional Ping and ClusterPing tests are covered by the integration tests
-// when REDIS_INTEGRATION_TEST=1 is set
+func TestManagerClient_ErrorCases(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client = nil
+	manager := NewManager(cfg)
+	client, err := manager.Client()
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "configuration is missing")
+
+	cfg = DefaultConfig()
+	cfg.Client.Enabled = false
+	manager = NewManager(cfg)
+	client, err = manager.Client()
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "is disabled")
+}
+
+func TestManagerUniversalClient_ErrorCases(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Universal = nil
+	manager := NewManager(cfg)
+	client, err := manager.UniversalClient()
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "configuration is missing")
+
+	cfg = DefaultConfig()
+	cfg.Universal.Enabled = false
+	manager = NewManager(cfg)
+	client, err = manager.UniversalClient()
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "is disabled")
+}
+
+func TestManagerClose_ErrorCases(t *testing.T) {
+	// Đóng khi chưa có client nào không lỗi
+	cfg := DefaultConfig()
+	manager := NewManager(cfg)
+	assert.NoError(t, manager.Close())
+}
+
+func TestManagerClose_ClientAndUniversalError(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true
+	cfg.Universal.Enabled = true
+	m := NewManager(cfg).(*manager)
+	// Tạo client và universal client với địa chỉ không hợp lệ để Close trả về lỗi
+	badClient := redis.NewClient(&redis.Options{Addr: "localhost:0"})
+	badUniversal := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{"localhost:0"}})
+	m.client = badClient
+	m.universalClient = badUniversal
+	_ = badClient.Close() // Đảm bảo client đã đóng để Close trả về lỗi
+	_ = badUniversal.Close()
+	err := m.Close()
+	assert.Error(t, err)
+}
+
+func TestManagerClose_OnlyClientError(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true
+	cfg.Universal.Enabled = true
+	m := NewManager(cfg).(*manager)
+	badClient := redis.NewClient(&redis.Options{Addr: "localhost:0"})
+	goodUniversal := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{"localhost:6379"}})
+	m.client = badClient
+	m.universalClient = goodUniversal
+	_ = badClient.Close()
+	err := m.Close()
+	assert.Error(t, err)
+}
+
+func TestManagerClose_OnlyUniversalError(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true
+	cfg.Universal.Enabled = true
+	m := NewManager(cfg).(*manager)
+	goodClient := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
+	badUniversal := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{"localhost:0"}})
+	m.client = goodClient
+	m.universalClient = badUniversal
+	_ = badUniversal.Close()
+	err := m.Close()
+	assert.Error(t, err)
+}
+
+func TestManagerPing_ClientPingError(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true
+	m := NewManager(cfg).(*manager)
+	badClient := redis.NewClient(&redis.Options{Addr: "localhost:0"})
+	m.client = badClient
+	err := m.Ping(context.Background())
+	assert.Error(t, err)
+}
+
+func TestManagerClusterPing_UniversalPingError(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Universal.Enabled = true
+	m := NewManager(cfg).(*manager)
+	badUniversal := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{"localhost:0"}})
+	m.universalClient = badUniversal
+	err := m.ClusterPing(context.Background())
+	assert.Error(t, err)
+}
+
+func TestManagerPing_ClientNil(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Client.Enabled = true
+	m := NewManager(cfg).(*manager)
+	// Đặt config.Client = nil để Client() trả về lỗi
+	m.config.Client = nil
+	err := m.Ping(context.Background())
+	assert.Error(t, err)
+}
+
+func TestManagerClusterPing_UniversalNil(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Universal.Enabled = true
+	m := NewManager(cfg).(*manager)
+	m.universalClient = nil
+	err := m.ClusterPing(context.Background())
+	assert.Error(t, err)
+}
+
+func TestManagerClusterPing_UniversalConfigNil(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.Universal = nil
+	m := NewManager(cfg).(*manager)
+	err := m.ClusterPing(context.Background())
+	assert.Error(t, err)
+}

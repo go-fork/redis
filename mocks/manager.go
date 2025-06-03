@@ -5,7 +5,8 @@ package mocks
 import (
 	context "context"
 
-	providersredis "go.fork.vn/redis"
+	go_fork_vnredis "go.fork.vn/redis"
+
 	mock "github.com/stretchr/testify/mock"
 
 	redis "github.com/redis/go-redis/v9"
@@ -173,19 +174,19 @@ func (_c *MockManager_ClusterPing_Call) RunAndReturn(run func(context.Context) e
 }
 
 // GetConfig provides a mock function with no fields
-func (_m *MockManager) GetConfig() *providersredis.Config {
+func (_m *MockManager) GetConfig() *go_fork_vnredis.Config {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConfig")
 	}
 
-	var r0 *providersredis.Config
-	if rf, ok := ret.Get(0).(func() *providersredis.Config); ok {
+	var r0 *go_fork_vnredis.Config
+	if rf, ok := ret.Get(0).(func() *go_fork_vnredis.Config); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*providersredis.Config)
+			r0 = ret.Get(0).(*go_fork_vnredis.Config)
 		}
 	}
 
@@ -209,12 +210,12 @@ func (_c *MockManager_GetConfig_Call) Run(run func()) *MockManager_GetConfig_Cal
 	return _c
 }
 
-func (_c *MockManager_GetConfig_Call) Return(_a0 *providersredis.Config) *MockManager_GetConfig_Call {
+func (_c *MockManager_GetConfig_Call) Return(_a0 *go_fork_vnredis.Config) *MockManager_GetConfig_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockManager_GetConfig_Call) RunAndReturn(run func() *providersredis.Config) *MockManager_GetConfig_Call {
+func (_c *MockManager_GetConfig_Call) RunAndReturn(run func() *go_fork_vnredis.Config) *MockManager_GetConfig_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -266,7 +267,7 @@ func (_c *MockManager_Ping_Call) RunAndReturn(run func(context.Context) error) *
 }
 
 // SetConfig provides a mock function with given fields: config
-func (_m *MockManager) SetConfig(config *providersredis.Config) {
+func (_m *MockManager) SetConfig(config *go_fork_vnredis.Config) {
 	_m.Called(config)
 }
 
@@ -276,14 +277,14 @@ type MockManager_SetConfig_Call struct {
 }
 
 // SetConfig is a helper method to define mock.On call
-//   - config *providersredis.Config
+//   - config *go_fork_vnredis.Config
 func (_e *MockManager_Expecter) SetConfig(config interface{}) *MockManager_SetConfig_Call {
 	return &MockManager_SetConfig_Call{Call: _e.mock.On("SetConfig", config)}
 }
 
-func (_c *MockManager_SetConfig_Call) Run(run func(config *providersredis.Config)) *MockManager_SetConfig_Call {
+func (_c *MockManager_SetConfig_Call) Run(run func(config *go_fork_vnredis.Config)) *MockManager_SetConfig_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*providersredis.Config))
+		run(args[0].(*go_fork_vnredis.Config))
 	})
 	return _c
 }
@@ -293,7 +294,7 @@ func (_c *MockManager_SetConfig_Call) Return() *MockManager_SetConfig_Call {
 	return _c
 }
 
-func (_c *MockManager_SetConfig_Call) RunAndReturn(run func(*providersredis.Config)) *MockManager_SetConfig_Call {
+func (_c *MockManager_SetConfig_Call) RunAndReturn(run func(*go_fork_vnredis.Config)) *MockManager_SetConfig_Call {
 	_c.Run(run)
 	return _c
 }

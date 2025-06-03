@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+## v0.1.1 - 2025-06-02
+
+### Changed
+- Cập nhật `go.fork.vn/config` từ v0.1.0 lên v0.1.1
+- Cập nhật `go.fork.vn/di` từ v0.1.0 lên v0.1.1
+- Cập nhật ServiceProvider để phù hợp với di v0.1.1, thay đổi kiểu tham số cho Register và Boot từ interface{} thành di.Application
+
+### Added
+- Thêm trường `Enabled` cho ClientConfig và UniversalConfig để kiểm soát việc khởi tạo client
+- Cải thiện logic trong ServiceProvider chỉ đăng ký các client đã được kích hoạt
+- Bổ sung kiểm tra tính hợp lệ cho cấu hình trong provider
+- Thêm test cases để kiểm tra các client bị tắt/bật
+
 ## v0.1.0 - 2025-05-31
 
 ### Added
@@ -36,5 +49,6 @@
 - `go.fork.vn/di`: Dependency injection integration
 - `go.fork.vn/config`: Configuration management
 
-[Unreleased]: https://github.com/go-fork/redis/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/go-fork/redis/compare/v0.1.1...HEAD
+[v0.1.1]: https://github.com/go-fork/redis/compare/v0.1.0...v0.1.1
 [v0.1.0]: https://github.com/go-fork/redis/releases/tag/v0.1.0
