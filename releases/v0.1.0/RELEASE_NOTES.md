@@ -223,4 +223,4 @@ This release maintains all existing functionality while establishing the foundat
 
 ---
 
-**Full Changelog**: https://github.com/go-fork/providers/compare/redis/v0.0.1...redis/v0.1.0
+**Full Changelog**: github.com/go-fork/providers/compare/redis/v0.0.1...redis/v0.1.0

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+- Thêm thư mục `.github` với các workflow tự động hóa (CI, release, update-deps)
+- Thêm cấu trúc quản lý phiên bản với thư mục `releases`
+- Thêm scripts tự động hóa quản lý phiên bản trong thư mục `scripts`
+
 ## v0.1.1 - 2025-06-02
 
 ### Changed
@@ -49,6 +54,6 @@
 - `go.fork.vn/di`: Dependency injection integration
 - `go.fork.vn/config`: Configuration management
 
-[Unreleased]: https://github.com/go-fork/redis/compare/v0.1.1...HEAD
-[v0.1.1]: https://github.com/go-fork/redis/compare/v0.1.0...v0.1.1
-[v0.1.0]: https://github.com/go-fork/redis/releases/tag/v0.1.0
+[Unreleased]: github.com/go-fork/redis/compare/v0.1.1...HEAD
+[v0.1.1]: github.com/go-fork/redis/compare/v0.1.0...v0.1.1
+[v0.1.0]: github.com/go-fork/redis/releases/tag/v0.1.0

@@ -8,7 +8,7 @@ package redis
 import "go.fork.vn/redis"
 ```
 
-Redis Provider cung cấp tích hợp Redis hoàn chỉnh cho Go-Fork Framework với hỗ trợ multiple connections, clustering, và sentinel.
+Redis Provider cung cấp tích hợp Redis hoàn chỉnh cho Fork Framework với hỗ trợ multiple connections, clustering, và sentinel.
 
 ## Core Interfaces
 

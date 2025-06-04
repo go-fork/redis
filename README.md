@@ -8,8 +8,8 @@ Package này cung cấp một cách đơn giản để cấu hình và quản l�
 
 - Redis client tiêu chuẩn
 - Universal client cho Redis Cluster, Sentinel và triển khai standalone
-- Dependency injection thông qua container `go-fork/di`
-- Cấu hình thông qua package `go-fork/providers/config`
+- Dependency injection thông qua container `Fork/di`
+- Cấu hình thông qua package `Fork/providers/config`
 - Kiểm thử dễ dàng với hỗ trợ mock (sử dụng mockery)
 
 ## Cài đặt

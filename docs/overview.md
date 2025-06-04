@@ -2,7 +2,7 @@
 
 ## Kiến trúc tổng quan
 
-Redis Provider được thiết kế theo nguyên tắc **Clean Architecture** và **Dependency Injection** của Go-Fork Framework.
+Redis Provider được thiết kế theo nguyên tắc **Clean Architecture** và **Dependency Injection** của Fork Framework.
 
 ### Sơ đồ kiến trúc
 
@@ -378,7 +378,7 @@ func (m *manager) HealthCheck(ctx context.Context) error {
 
 ### Logging Integration
 
-Tích hợp với logging system của Go-Fork:
+Tích hợp với logging system của Fork:
 
 ```go
 logger := app.Logger()
@@ -437,4 +437,4 @@ connection.AddMiddleware(NewMetricsMiddleware())
 
 - [Reference](reference.md) - Complete API documentation
 - [Usage](usage.md) - Detailed usage examples
-- [Examples](https://github.com/go-fork/recipes/tree/main/examples/redis)
+- [Examples](github.com/go-fork/recipes/tree/main/examples/redis)

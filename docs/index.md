@@ -1,6 +1,6 @@
 # Redis Provider v0.1.1
 
-Redis Provider là một package cung cấp tích hợp Redis hoàn chỉnh cho Go-Fork Framework, hỗ trợ Redis standalone, Cluster và Sentinel.
+Redis Provider là một package cung cấp tích hợp Redis hoàn chỉnh cho Fork Framework, hỗ trợ Redis standalone, Cluster và Sentinel.
 
 ## Cài đặt nhanh
 
@@ -41,7 +41,7 @@ func main() {
     conn := manager.Connection()
     
     ctx := context.Background()
-    conn.Set(ctx, "welcome", "Hello Go-Fork Redis!", 0)
+    conn.Set(ctx, "welcome", "Hello Fork Redis!", 0)
     
     val, err := conn.Get(ctx, "welcome").Result()
     if err != nil {
@@ -94,6 +94,6 @@ redis:
 
 ## Hỗ trợ
 
-- [GitHub Issues](https://github.com/go-fork/redis/issues)
-- [Examples](https://github.com/go-fork/recipes/tree/main/examples/redis)
-- [Community](https://github.com/go-fork/redis/discussions)
+- [GitHub Issues](github.com/go-fork/redis/issues)
+- [Examples](github.com/go-fork/recipes/tree/main/examples/redis)
+- [Community](github.com/go-fork/redis/discussions)

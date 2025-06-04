@@ -266,57 +266,24 @@ func (_c *MockManager_Ping_Call) RunAndReturn(run func(context.Context) error) *
 	return _c
 }
 
-// SetConfig provides a mock function with given fields: config
-func (_m *MockManager) SetConfig(config *go_fork_vnredis.Config) {
-	_m.Called(config)
-}
-
-// MockManager_SetConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetConfig'
-type MockManager_SetConfig_Call struct {
-	*mock.Call
-}
-
-// SetConfig is a helper method to define mock.On call
-//   - config *go_fork_vnredis.Config
-func (_e *MockManager_Expecter) SetConfig(config interface{}) *MockManager_SetConfig_Call {
-	return &MockManager_SetConfig_Call{Call: _e.mock.On("SetConfig", config)}
-}
-
-func (_c *MockManager_SetConfig_Call) Run(run func(config *go_fork_vnredis.Config)) *MockManager_SetConfig_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*go_fork_vnredis.Config))
-	})
-	return _c
-}
-
-func (_c *MockManager_SetConfig_Call) Return() *MockManager_SetConfig_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *MockManager_SetConfig_Call) RunAndReturn(run func(*go_fork_vnredis.Config)) *MockManager_SetConfig_Call {
-	_c.Run(run)
-	return _c
-}
-
 // UniversalClient provides a mock function with no fields
-func (_m *MockManager) UniversalClient() (redis.UniversalClient, error) {
+func (_m *MockManager) UniversalClient() (*redis.UniversalClient, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for UniversalClient")
 	}
 
-	var r0 redis.UniversalClient
+	var r0 *redis.UniversalClient
 	var r1 error
-	if rf, ok := ret.Get(0).(func() (redis.UniversalClient, error)); ok {
+	if rf, ok := ret.Get(0).(func() (*redis.UniversalClient, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() redis.UniversalClient); ok {
+	if rf, ok := ret.Get(0).(func() *redis.UniversalClient); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(redis.UniversalClient)
+			r0 = ret.Get(0).(*redis.UniversalClient)
 		}
 	}
 
@@ -346,12 +313,12 @@ func (_c *MockManager_UniversalClient_Call) Run(run func()) *MockManager_Univers
 	return _c
 }
 
-func (_c *MockManager_UniversalClient_Call) Return(_a0 redis.UniversalClient, _a1 error) *MockManager_UniversalClient_Call {
+func (_c *MockManager_UniversalClient_Call) Return(_a0 *redis.UniversalClient, _a1 error) *MockManager_UniversalClient_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockManager_UniversalClient_Call) RunAndReturn(run func() (redis.UniversalClient, error)) *MockManager_UniversalClient_Call {
+func (_c *MockManager_UniversalClient_Call) RunAndReturn(run func() (*redis.UniversalClient, error)) *MockManager_UniversalClient_Call {
 	_c.Call.Return(run)
 	return _c
 }

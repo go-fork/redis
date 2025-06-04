@@ -78,4 +78,4 @@ Không có vấn đề đã biết nào khi nâng cấp lên phiên bản này.
 ## Hỗ trợ
 
 Nếu bạn gặp bất kỳ vấn đề nào khi nâng cấp, vui lòng báo cáo tại:
-https://github.com/go-fork/redis/issues
+github.com/go-fork/redis/issues

@@ -1,7 +1,7 @@
 # Redis Package v0.1.1 Release Notes
 
 ## Summary
-Version v0.1.1 của Redis Package cung cấp các cải tiến về tính ổn định, hiệu suất và cập nhật dependencies. Đây là một bản phát hành bảo trì nhỏ không thêm tính năng mới, nhưng cải thiện độ ổn định và khả năng tích hợp với các module khác trong hệ sinh thái Go-Fork.
+Version v0.1.1 của Redis Package cung cấp các cải tiến về tính ổn định, hiệu suất và cập nhật dependencies. Đây là một bản phát hành bảo trì nhỏ không thêm tính năng mới, nhưng cải thiện độ ổn định và khả năng tích hợp với các module khác trong hệ sinh thái Fork.
 
 ## Changes
 
@@ -37,4 +37,4 @@ require go.fork.vn/redis v0.1.1
 ```
 
 ## Support
-Vui lòng báo cáo bất kỳ vấn đề nào tại: https://github.com/go-fork/redis/issues
+Vui lòng báo cáo bất kỳ vấn đề nào tại: github.com/go-fork/redis/issues
