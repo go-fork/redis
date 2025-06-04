@@ -1,11 +1,11 @@
-# Redis Provider v0.1.1
+# Redis Provider v0.1.2
 
 Redis Provider là một package cung cấp tích hợp Redis hoàn chỉnh cho Fork Framework, hỗ trợ Redis standalone, Cluster và Sentinel.
 
 ## Cài đặt nhanh
 
 ```bash
-go get go.fork.vn/redis@v0.1.1
+go get go.fork.vn/redis@v0.1.2
 ```
 
 ## Sử dụng cơ bản

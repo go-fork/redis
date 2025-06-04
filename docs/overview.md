@@ -1,4 +1,4 @@
-# Overview - Redis Provider v0.1.1
+# Overview - Redis Provider v0.1.2
 
 ## Kiến trúc tổng quan
 
@@ -6,26 +6,27 @@ Redis Provider được thiết kế theo nguyên tắc **Clean Architecture** v
 
 ### Sơ đồ kiến trúc
 
+```mermaid
+flowchart TD
+    subgraph Application
+        subgraph ServiceProviders["Service Providers"]
+            subgraph RedisProvider["Redis Service Provider"]
+                subgraph Manager["Manager"]
+                    subgraph Connections["Connections"]
+                        Redis["Redis Client"]
+                        Cluster["Cluster Client"]
+                        Sentinel["Sentinel Client"]
+                    end
+                end
+            end
+        end
+        DIContainer["DI Container"]
+    end
+    
+    RedisProvider --> DIContainer
+    Manager --> Connections
+    Connections --> Redis & Cluster & Sentinel
 ```
-┌─────────────────────────────────────┐
-│           Application               │
-├─────────────────────────────────────┤
-│         Service Providers           │
-│  ┌─────────────────────────────────┐ │
-│  │     Redis Service Provider     │ │
-│  │  ┌─────────────────────────────┐│ │
-│  │  │         Manager             ││ │
-│  │  │  ┌─────────────────────────┐││ │
-│  │  │  │     Connections         │││ │
-│  │  │  │ ┌─────┐ ┌───────┐ ┌────┐│││ │
-│  │  │  │ │Redis│ │Cluster│ │Sent││││ │
-│  │  │  │ └─────┘ └───────┘ └────┘│││ │
-│  │  │  └─────────────────────────┘││ │
-│  │  └─────────────────────────────┘│ │
-│  └─────────────────────────────────┘ │
-├─────────────────────────────────────┤
-│           DI Container              │
-└─────────────────────────────────────┘
 ```
 
 ## Thành phần chính
@@ -189,15 +190,13 @@ REDIS_PASSWORD=secret
 
 ### Connection States
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Created   │───▶│ Connecting  │───▶│  Connected  │
-└─────────────┘    └─────────────┘    └─────────────┘
-       │                   │                   │
-       │                   ▼                   ▼
-       │            ┌─────────────┐    ┌─────────────┐
-       └───────────▶│    Error    │    │   Closed    │
-                    └─────────────┘    └─────────────┘
+```mermaid
+stateDiagram-v2
+    Created --> Connecting
+    Connecting --> Connected
+    Connecting --> Error
+    Created --> Error
+    Connected --> Closed
 ```
 
 ### Automatic Reconnection

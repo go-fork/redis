@@ -2,10 +2,19 @@
 
 ## [Unreleased]
 
+## v0.1.2 - 2025-06-04
+
 ### Added
 - Thêm thư mục `.github` với các workflow tự động hóa (CI, release, update-deps)
 - Thêm cấu trúc quản lý phiên bản với thư mục `releases`
 - Thêm scripts tự động hóa quản lý phiên bản trong thư mục `scripts`
+- Sửa lỗi panic trong phương thức Boot của ServiceProvider
+
+### Changed
+- Nâng cấp `github.com/redis/go-redis/v9` từ v9.8.0 lên v9.9.0
+- Nâng cấp `go.fork.vn/config` từ v0.1.2 lên v0.1.3
+- Nâng cấp `go.fork.vn/di` từ v0.1.2 lên v0.1.3
+- Cải thiện tài liệu và hướng dẫn cấu hình
 
 ## v0.1.1 - 2025-06-02
 
@@ -54,6 +63,7 @@
 - `go.fork.vn/di`: Dependency injection integration
 - `go.fork.vn/config`: Configuration management
 
-[Unreleased]: github.com/go-fork/redis/compare/v0.1.1...HEAD
+[Unreleased]: github.com/go-fork/redis/compare/v0.1.2...HEAD
+[v0.1.2]: github.com/go-fork/redis/compare/v0.1.1...v0.1.2
 [v0.1.1]: github.com/go-fork/redis/compare/v0.1.0...v0.1.1
 [v0.1.0]: github.com/go-fork/redis/releases/tag/v0.1.0

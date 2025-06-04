@@ -120,35 +120,44 @@ Tạo file `redis.yaml` trong thư mục cấu hình của bạn:
 redis:
   # Cấu hình client tiêu chuẩn
   client:
+    enabled: true
     host: localhost
     port: 6379
     password: ""
     db: 0
     prefix: "app:"
-    dial_timeout: 5
-    read_timeout: 3
-    write_timeout: 3
+    timeout: 5  # seconds
+    dial_timeout: 5  # seconds
+    read_timeout: 3  # seconds
+    write_timeout: 3  # seconds
     pool_size: 10
     min_idle_conns: 5
   
-  # Cấu hình universal client (cho cluster/sentinel)
+  # Cấu hình universal client (cho cluster/sentinel/standalone)
   universal:
+    enabled: false
     addresses:
       - localhost:6379
     password: ""
     db: 0
     prefix: "app:"
-    dial_timeout: 5
-    read_timeout: 3
-    write_timeout: 3
+    timeout: 5  # seconds
+    dial_timeout: 5  # seconds
+    read_timeout: 3  # seconds
+    write_timeout: 3  # seconds
     max_retries: 3
-    min_retry_backoff: 8
-    max_retry_backoff: 512
+    min_retry_backoff: 8  # milliseconds
+    max_retry_backoff: 512  # milliseconds
     pool_size: 10
     min_idle_conns: 5
+    
+    # Cấu hình cho Cluster mode
     cluster_mode: false
-    master_name: "" # Chỉ cho chế độ sentinel
-    route_randomly: false
+    max_redirects: 3
+    
+    # Cấu hình cho Sentinel mode
+    sentinel_mode: false
+    master_name: "mymaster"
 ```
 
 ### Testing với Mock

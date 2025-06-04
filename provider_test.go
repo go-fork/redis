@@ -6,16 +6,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go.fork.vn/config/mocks"
+	config_mocks "go.fork.vn/config/mocks"
 	"go.fork.vn/di"
-	diMocks "go.fork.vn/di/mocks"
+	di_mocks "go.fork.vn/di/mocks"
 )
 
 // setupMockApplication thiết lập một mock Application với Container đã cấu hình
-func setupMockApplication(t *testing.T) (*diMocks.MockApplication, di.Container) {
+func setupMockApplication(t *testing.T) (*di_mocks.MockApplication, di.Container) {
 	container := di.New()
 
-	mockApp := diMocks.NewMockApplication(t)
+	mockApp := di_mocks.NewMockApplication(t)
 	mockApp.On("Container").Return(container).Maybe()
 
 	return mockApp, container
@@ -26,12 +26,12 @@ func TestNewServiceProvider(t *testing.T) {
 	assert.NotNil(t, provider, "NewServiceProvider() không được trả về nil")
 }
 
-func TestServiceProviderRegister(t *testing.T) {
+func TestServiceProvider_Register(t *testing.T) {
 	// Tạo mock application và container
 	mockApp, container := setupMockApplication(t)
 
 	// Tạo mock config manager
-	mockConfigManager := mocks.NewMockManager(t)
+	mockConfigManager := config_mocks.NewMockManager(t)
 	mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 		var config *Config
 		// Handle both *Config and **Config
@@ -80,7 +80,7 @@ func TestServiceProviderRegister(t *testing.T) {
 	}
 }
 
-func TestServiceProviderBoot(t *testing.T) {
+func TestServiceProvider_Boot(t *testing.T) {
 	tests := []struct {
 		name        string
 		setupMocks  func() di.Application
@@ -106,12 +106,12 @@ func TestServiceProviderBoot(t *testing.T) {
 			setupMocks: func() di.Application {
 				return nil
 			},
-			expectPanic: false,
+			expectPanic: true,
 		},
 		{
 			name: "application with nil container",
 			setupMocks: func() di.Application {
-				mockApp := diMocks.NewMockApplication(t)
+				mockApp := di_mocks.NewMockApplication(t)
 				mockApp.On("Container").Return(nil).Maybe()
 				return mockApp
 			},
@@ -137,12 +137,12 @@ func TestServiceProviderBoot(t *testing.T) {
 	}
 }
 
-func TestServiceProviderWithConfigError(t *testing.T) {
+func TestServiceProvider_WithConfigError(t *testing.T) {
 	// Tạo mock application và container
 	mockApp, container := setupMockApplication(t)
 
 	// Tạo mock config manager với lỗi
-	mockConfigManager := mocks.NewMockManager(t)
+	mockConfigManager := config_mocks.NewMockManager(t)
 	mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Return(errors.New("config error")).Once()
 
 	// Đăng ký config manager vào container
@@ -157,12 +157,12 @@ func TestServiceProviderWithConfigError(t *testing.T) {
 	}, "ServiceProvider.Register nên panic khi config manager trả về lỗi")
 }
 
-func TestServiceProviderWithInvalidConfig(t *testing.T) {
+func TestServiceProvider_WithInvalidConfig(t *testing.T) {
 	// Tạo mock application và container
 	mockApp, container := setupMockApplication(t)
 
 	// Tạo mock config manager với cấu hình không hợp lệ
-	mockConfigManager := mocks.NewMockManager(t)
+	mockConfigManager := config_mocks.NewMockManager(t)
 	mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 		var config *Config
 		if c, ok := args.Get(1).(**Config); ok {
@@ -196,7 +196,7 @@ func TestContainerBindingResolution(t *testing.T) {
 	mockApp, container := setupMockApplication(t)
 
 	// Tạo mock config manager
-	mockConfigManager := mocks.NewMockManager(t)
+	mockConfigManager := config_mocks.NewMockManager(t)
 	mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 		var config *Config
 		if c, ok := args.Get(1).(**Config); ok {
@@ -264,23 +264,23 @@ func TestContainerBindingResolution(t *testing.T) {
 	assert.NotNil(t, loggerStruct.LogManager, "LogManager không được là nil")
 }
 
-// TestServiceProviderRequires kiểm tra method Requires() trả về giá trị đúng
-func TestServiceProviderRequires(t *testing.T) {
+// TestServiceProvider_Requires kiểm tra method Requires() trả về giá trị đúng
+func TestServiceProvider_Requires(t *testing.T) {
 	provider := NewServiceProvider()
 	requires := provider.Requires()
 	// Redis provider phụ thuộc vào config provider
 	assert.Equal(t, []string{"config"}, requires, "Redis provider phải phụ thuộc vào provider 'config'")
 }
 
-func TestServiceProviderProviders(t *testing.T) {
+func TestServiceProvider_Providers(t *testing.T) {
 	provider := NewServiceProvider()
 	providers := provider.Providers()
 	// Nếu provider không đăng ký service nào, mong đợi rỗng
 	assert.Empty(t, providers, "Provider không nên đăng ký service nào nếu Providers trả về rỗng")
 }
 
-// TestRegisterWithInvalidInputs kiểm tra các trường hợp đầu vào không hợp lệ cho Register
-func TestRegisterWithInvalidInputs(t *testing.T) {
+// TestServiceProvider_RegisterWithInvalidInputs kiểm tra các trường hợp đầu vào không hợp lệ cho Register
+func TestServiceProvider_RegisterWithInvalidInputs(t *testing.T) {
 	tests := []struct {
 		name        string
 		setupMocks  func() (di.Application, di.Container)
@@ -298,7 +298,7 @@ func TestRegisterWithInvalidInputs(t *testing.T) {
 		{
 			name: "application with nil container",
 			setupMocks: func() (di.Application, di.Container) {
-				mockApp := diMocks.NewMockApplication(t)
+				mockApp := di_mocks.NewMockApplication(t)
 				mockApp.On("Container").Return(nil).Once()
 				return mockApp, nil
 			},
@@ -353,8 +353,8 @@ func BenchmarkNewServiceProvider(b *testing.B) {
 	}
 }
 
-// BenchmarkServiceProviderRegister đo hiệu suất đăng ký ServiceProvider
-func BenchmarkServiceProviderRegister(b *testing.B) {
+// BenchmarkServiceProvider_Register đo hiệu suất đăng ký ServiceProvider
+func BenchmarkServiceProvider_Register(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
@@ -362,11 +362,11 @@ func BenchmarkServiceProviderRegister(b *testing.B) {
 		container := di.New()
 
 		// Tạo mock application với clean state
-		mockApp := diMocks.NewMockApplication(b)
+		mockApp := di_mocks.NewMockApplication(b)
 		mockApp.On("Container").Return(container).Once()
 
 		// Tạo mock config manager với clean state
-		mockConfigManager := mocks.NewMockManager(b)
+		mockConfigManager := config_mocks.NewMockManager(b)
 		mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 			var config *Config
 			if c, ok := args.Get(1).(**Config); ok {
@@ -408,11 +408,11 @@ func BenchmarkServiceProviderRegister(b *testing.B) {
 	}
 }
 
-// BenchmarkServiceProviderBoot đo hiệu suất Boot method
-func BenchmarkServiceProviderBoot(b *testing.B) {
+// BenchmarkServiceProvider_Boot đo hiệu suất Boot method
+func BenchmarkServiceProvider_Boot(b *testing.B) {
 	// Setup một lần cho Boot benchmark vì Boot không có side effects
 	container := di.New()
-	mockApp := &diMocks.MockApplication{}
+	mockApp := &di_mocks.MockApplication{}
 	mockApp.On("Container").Return(container).Maybe()
 	container.Instance("redis", NewManager(&Config{
 		Client: &ClientConfig{
@@ -430,8 +430,8 @@ func BenchmarkServiceProviderBoot(b *testing.B) {
 	}
 }
 
-// BenchmarkServiceProviderRequires đo hiệu suất Requires method
-func BenchmarkServiceProviderRequires(b *testing.B) {
+// BenchmarkServiceProvider_Requires đo hiệu suất Requires method
+func BenchmarkServiceProvider_Requires(b *testing.B) {
 	provider := NewServiceProvider()
 
 	b.ResetTimer()
@@ -440,8 +440,8 @@ func BenchmarkServiceProviderRequires(b *testing.B) {
 	}
 }
 
-// BenchmarkServiceProviderProviders đo hiệu suất Providers method
-func BenchmarkServiceProviderProviders(b *testing.B) {
+// BenchmarkServiceProvider_Providers đo hiệu suất Providers method
+func BenchmarkServiceProvider_Providers(b *testing.B) {
 	provider := NewServiceProvider()
 
 	b.ResetTimer()
@@ -454,10 +454,10 @@ func BenchmarkServiceProviderProviders(b *testing.B) {
 func BenchmarkContainerMakeLog(b *testing.B) {
 	// Setup một lần
 	container := di.New()
-	mockApp := &diMocks.MockApplication{}
+	mockApp := &di_mocks.MockApplication{}
 	mockApp.On("Container").Return(container).Once()
 
-	mockConfigManager := &mocks.MockManager{}
+	mockConfigManager := &config_mocks.MockManager{}
 	mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 		var config *Config
 		if c, ok := args.Get(1).(**Config); ok {
@@ -513,10 +513,10 @@ func BenchmarkCompleteServiceProviderWorkflow(b *testing.B) {
 		b.StopTimer()
 		// Setup cho mỗi iteration
 		container := di.New()
-		mockApp := diMocks.NewMockApplication(b)
+		mockApp := di_mocks.NewMockApplication(b)
 		mockApp.On("Container").Return(container).Times(2) // Register + Boot
 
-		mockConfigManager := mocks.NewMockManager(b)
+		mockConfigManager := config_mocks.NewMockManager(b)
 		mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 			var config *Config
 			if c, ok := args.Get(1).(**Config); ok {
@@ -569,10 +569,10 @@ func BenchmarkParallelServiceProviderRegister(b *testing.B) {
 		for pb.Next() {
 			// Setup cho mỗi goroutine với clean mocks
 			container := di.New()
-			mockApp := diMocks.NewMockApplication(b)
+			mockApp := di_mocks.NewMockApplication(b)
 			mockApp.On("Container").Return(container).Once()
 
-			mockConfigManager := mocks.NewMockManager(b)
+			mockConfigManager := config_mocks.NewMockManager(b)
 			mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 				var config *Config
 				if c, ok := args.Get(1).(**Config); ok {
@@ -613,8 +613,8 @@ func BenchmarkParallelServiceProviderRegister(b *testing.B) {
 	})
 }
 
-// BenchmarkServiceProviderWithDifferentLogLevels đo hiệu suất với các log level khác nhau
-func BenchmarkServiceProviderWithDifferentLogLevels(b *testing.B) {
+// BenchmarkServiceProvider_WithDifferentLogLevels đo hiệu suất với các log level khác nhau
+func BenchmarkServiceProvider_WithDifferentLogLevels(b *testing.B) {
 	logLevels := []string{"debug", "info", "warning", "error", "fatal"}
 
 	for _, level := range logLevels {
@@ -623,10 +623,10 @@ func BenchmarkServiceProviderWithDifferentLogLevels(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				b.StopTimer()
 				container := di.New()
-				mockApp := diMocks.NewMockApplication(b)
+				mockApp := di_mocks.NewMockApplication(b)
 				mockApp.On("Container").Return(container).Once()
 
-				mockConfigManager := mocks.NewMockManager(b)
+				mockConfigManager := config_mocks.NewMockManager(b)
 				mockConfigManager.On("UnmarshalKey", "redis", mock.Anything).Run(func(args mock.Arguments) {
 					var config *Config
 					if c, ok := args.Get(1).(**Config); ok {

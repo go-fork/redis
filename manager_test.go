@@ -59,7 +59,7 @@ func TestNewManager_Custom(t *testing.T) {
 	}
 }
 
-func TestManagerClient(t *testing.T) {
+func TestManager_Client(t *testing.T) {
 	config := DefaultConfig()
 	config.Client.Enabled = true // Ensure client is enabled for this test
 	manager := NewManager(config)
@@ -75,7 +75,7 @@ func TestManagerClient(t *testing.T) {
 
 }
 
-func TestManagerUniversalClient(t *testing.T) {
+func TestManager_UniversalClient(t *testing.T) {
 	// Create a custom config with Universal.Enabled = true
 	config := DefaultConfig()
 	config.Universal.Enabled = true
@@ -101,7 +101,7 @@ func TestManagerUniversalClient(t *testing.T) {
 	}
 }
 
-func TestManagerClose(t *testing.T) {
+func TestManager_Close(t *testing.T) {
 	// Create a manager with Universal.Enabled = true
 	config := DefaultConfig()
 	config.Universal.Enabled = true
@@ -114,7 +114,7 @@ func TestManagerClose(t *testing.T) {
 	}
 }
 
-func TestManagerPing_Integration(t *testing.T) {
+func TestManager_Ping_Integration(t *testing.T) {
 	skipIntegrationTest(t)
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true // Ensure client is enabled for this test
@@ -126,7 +126,7 @@ func TestManagerPing_Integration(t *testing.T) {
 	}
 }
 
-func TestManagerClusterPing_Integration(t *testing.T) {
+func TestManager_ClusterPing_Integration(t *testing.T) {
 	skipIntegrationTest(t)
 
 	// For this test, you need a Redis cluster or a single Redis instance
@@ -148,7 +148,7 @@ func MockRedisClient() *redis.Client {
 	})
 }
 
-func TestManagerClient_ErrorCases(t *testing.T) {
+func TestManager_Client_ErrorCases(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client = nil
 	manager := NewManager(cfg)
@@ -166,7 +166,7 @@ func TestManagerClient_ErrorCases(t *testing.T) {
 	assert.Contains(t, err.Error(), "is disabled")
 }
 
-func TestManagerUniversalClient_ErrorCases(t *testing.T) {
+func TestManager_UniversalClient_ErrorCases(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Universal = nil
 	manager := NewManager(cfg)
@@ -184,14 +184,14 @@ func TestManagerUniversalClient_ErrorCases(t *testing.T) {
 	assert.Contains(t, err.Error(), "is disabled")
 }
 
-func TestManagerClose_ErrorCases(t *testing.T) {
+func TestManager_Close_ErrorCases(t *testing.T) {
 	// Đóng khi chưa có client nào không lỗi
 	cfg := DefaultConfig()
 	manager := NewManager(cfg)
 	assert.NoError(t, manager.Close())
 }
 
-func TestManagerClose_ClientAndUniversalError(t *testing.T) {
+func TestManager_Close_ClientAndUniversalError(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true
 	cfg.Universal.Enabled = true
@@ -207,7 +207,7 @@ func TestManagerClose_ClientAndUniversalError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerClose_OnlyClientError(t *testing.T) {
+func TestManager_Close_OnlyClientError(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true
 	cfg.Universal.Enabled = true
@@ -221,7 +221,7 @@ func TestManagerClose_OnlyClientError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerClose_OnlyUniversalError(t *testing.T) {
+func TestManager_Close_OnlyUniversalError(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true
 	cfg.Universal.Enabled = true
@@ -235,7 +235,7 @@ func TestManagerClose_OnlyUniversalError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerPing_ClientPingError(t *testing.T) {
+func TestManager_Ping_ClientPingError(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true
 	m := NewManager(cfg).(*manager)
@@ -245,7 +245,7 @@ func TestManagerPing_ClientPingError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerClusterPing_UniversalPingError(t *testing.T) {
+func TestManager_ClusterPing_UniversalPingError(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Universal.Enabled = true
 	m := NewManager(cfg).(*manager)
@@ -255,7 +255,7 @@ func TestManagerClusterPing_UniversalPingError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerPing_ClientNil(t *testing.T) {
+func TestManager_Ping_ClientNil(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Client.Enabled = true
 	m := NewManager(cfg).(*manager)
@@ -265,7 +265,7 @@ func TestManagerPing_ClientNil(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerClusterPing_UniversalNil(t *testing.T) {
+func TestManager_ClusterPing_UniversalNil(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Universal.Enabled = true
 	m := NewManager(cfg).(*manager)
@@ -274,7 +274,7 @@ func TestManagerClusterPing_UniversalNil(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestManagerClusterPing_UniversalConfigNil(t *testing.T) {
+func TestManager_ClusterPing_UniversalConfigNil(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.Universal = nil
 	m := NewManager(cfg).(*manager)

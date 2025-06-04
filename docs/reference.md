@@ -1,4 +1,4 @@
-# API Reference - Redis Provider v0.1.1
+# API Reference - Redis Provider v0.1.2
 
 ## Package Overview
 

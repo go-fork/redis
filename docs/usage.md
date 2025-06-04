@@ -7,7 +7,7 @@ Redis Provider cung cấp một cách đơn giản và hiệu quả để tích 
 ## Cài đặt
 
 ```bash
-go get go.fork.vn/redis@v0.1.0
+go get go.fork.vn/redis@v0.1.2
 ```
 
 ## Import
@@ -25,14 +25,16 @@ Tạo file cấu hình `config/app.yaml`:
 ```yaml
 redis:
   client:
+    enabled: true
     host: "127.0.0.1"
     port: 6379
     password: ""
     db: 0
-    timeout: 10
-    dial_timeout: 5
-    read_timeout: 3
-    write_timeout: 3
+    prefix: "app:"
+    timeout: 5  # seconds
+    dial_timeout: 5  # seconds
+    read_timeout: 3  # seconds
+    write_timeout: 3  # seconds
     pool_size: 10
     min_idle_conns: 5
 ```
@@ -42,17 +44,27 @@ redis:
 ```yaml
 redis:
   universal:
+    enabled: true
     addresses:
       - "127.0.0.1:7000"
       - "127.0.0.1:7001"
       - "127.0.0.1:7002"
     password: ""
     db: 0
+    prefix: "app:"
+    timeout: 5  # seconds
+    dial_timeout: 5  # seconds
+    read_timeout: 3  # seconds
+    write_timeout: 3  # seconds
+    max_retries: 3
+    min_retry_backoff: 8  # milliseconds
+    max_retry_backoff: 512  # milliseconds
+    pool_size: 10
+    min_idle_conns: 5
+    
+    # Bật mode Cluster
     cluster_mode: true
     max_redirects: 3
-    timeout: 10
-    max_retries: 3
-    pool_size: 10
 ```
 
 ### 3. Redis Sentinel
@@ -60,17 +72,27 @@ redis:
 ```yaml
 redis:
   universal:
+    enabled: true
     addresses:
       - "127.0.0.1:26379"
       - "127.0.0.1:26380"
       - "127.0.0.1:26381"
-    master_name: "mymaster"
     password: ""
     db: 0
-    sentinel_mode: true
-    timeout: 10
+    prefix: "app:"
+    timeout: 5  # seconds
+    dial_timeout: 5  # seconds
+    read_timeout: 3  # seconds
+    write_timeout: 3  # seconds
     max_retries: 3
+    min_retry_backoff: 8  # milliseconds
+    max_retry_backoff: 512  # milliseconds
     pool_size: 10
+    min_idle_conns: 5
+    
+    # Bật mode Sentinel
+    sentinel_mode: true
+    master_name: "mymaster"
 ```
 
 ## Khởi tạo Application
