@@ -1,0 +1,31 @@
+{
+    "redis": {
+        "client": {
+            "enabled": false,
+            "network": "tcp",
+            "addr": "localhost:6379",
+            "username": "",
+            "password": "",
+            "db": 0,
+            "client_name": "",
+            "protocol": 2,
+            "dial_timeout": "5s",
+            "read_timeout": "3s",
+            "write_timeout": "3s"
+        },
+        "universal": {
+            "enabled": false,
+            "addrs": [
+                "localhost:6379"
+            ],
+            "username": "",
+            "password": "",
+            "db": 0,
+            "client_name": "",
+            "protocol": 2,
+            "dial_timeout": "5s",
+            "read_timeout": "3s",
+            "write_timeout": "3s"
+        }
+    }
+}

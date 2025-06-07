@@ -16,7 +16,7 @@ flowchart LR
 ```
 
 ## Prerequisites
-- Go 1.19 trở lên
+- Go 1.23 trở lên
 - Đã cài đặt phiên bản v0.1.1
 
 ## Quick Migration Checklist

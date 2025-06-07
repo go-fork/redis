@@ -1,63 +1,60 @@
-# Release Notes - v0.1.3
+# Release Notes - v0.1.2
 
 ## Overview
-Brief description of this release and its main purpose.
+Phiên bản v0.1.2 tập trung vào việc cải thiện xử lý lỗi và tài liệu hướng dẫn.
 
 ## What's New
 ### 🚀 Features
-- New feature 1
-- New feature 2
+- Thêm tham số `enabled` cho cả Redis Client và Universal Client
 
 ### 🐛 Bug Fixes
-- Fix for issue #X
-- Fix for issue #Y
+- Sửa lỗi panic trong phương thức Boot của ServiceProvider
+- Cải thiện xử lý lỗi khi cấu hình không hợp lệ
 
 ### 🔧 Improvements
-- Performance improvement 1
-- Code quality improvement 2
+- Cập nhật unit test cho phần xử lý lỗi
+- Tối ưu quy trình kiểm tra trạng thái kết nối Redis
 
 ### 📚 Documentation
-- Updated documentation for feature X
-- Added examples for use case Y
+- Cập nhật hướng dẫn cấu hình trong README.md và docs/
+- Thêm chi tiết về tham số cấu hình mới
 
 ## Breaking Changes
 ### ⚠️ Important Notes
-- Breaking change 1 (if any)
-- Breaking change 2 (if any)
+- Không có thay đổi gây ảnh hưởng (non-breaking changes)
 
 ## Migration Guide
 See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions.
 
 ## Dependencies
 ### Updated
-- dependency-name: vX.Y.Z → vA.B.C
+- github.com/redis/go-redis/v9: v9.8.0 → v9.9.0
+- go.fork.vn/config: v0.1.2 → v0.1.3
+- go.fork.vn/di: v0.1.2 → v0.1.3
 
 ### Added
-- new-dependency: vX.Y.Z
+- Thêm scripts tự động hóa cho quản lý phát hành
 
 ### Removed
-- removed-dependency: vX.Y.Z
+- Không có
 
 ## Performance
-- Benchmark improvement: X% faster in scenario Y
-- Memory usage: X% reduction in scenario Z
+- Không có thay đổi đáng kể về hiệu năng trong phiên bản này
 
 ## Security
-- Security fix for vulnerability X
-- Updated dependencies with security patches
+- Cập nhật dependencies với các bản vá bảo mật mới nhất
 
 ## Testing
-- Added X new test cases
-- Improved test coverage to X%
+- Thêm test case kiểm tra xử lý lỗi panic trong Boot method
+- Cải thiện độ phủ test cho các tình huống lỗi và trường hợp ngoại lệ
 
 ## Contributors
-Thanks to all contributors who made this release possible:
-- @contributor1
-- @contributor2
+Cảm ơn tất cả những người đóng góp đã giúp phát hành phiên bản này:
+- @go-fork
 
 ## Download
-- Source code: [go.fork.vn/redis@v0.1.3]
-- Documentation: [pkg.go.dev/go.fork.vn/redis@v0.1.3]
+- Source code: [go.fork.vn/redis@v0.1.2]
+- Documentation: [pkg.go.dev/go.fork.vn/redis@v0.1.2]
 
 ---
 Release Date: 2025-06-04

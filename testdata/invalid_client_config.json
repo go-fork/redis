@@ -1,0 +1,8 @@
+{
+    "redis": {
+        "client": {
+            "enabled": true,
+            "network": "tcp"
+        }
+    }
+}

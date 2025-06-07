@@ -1,0 +1,9 @@
+{
+    "redis": {
+        "universal": {
+            "enabled": true,
+            "username": "user",
+            "password": "pass"
+        }
+    }
+}

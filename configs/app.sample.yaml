@@ -1,41 +1,294 @@
+# Redis Configuration Examples
+# This file provides comprehensive examples for different Redis deployment scenarios
+
 redis:
-  # Standard client configuration
+  # Standard client configuration (redis.Options)
+  # Use this for single Redis instance connections
   client:
+    # Enable or disable standard Redis client
+    # Default: true
     enabled: true
-    host: localhost
-    port: 6379
-    password: ""
-    db: 0
-    prefix: "app:"
-    timeout: 5  # seconds
-    dial_timeout: 5  # seconds
-    read_timeout: 3  # seconds
-    write_timeout: 3  # seconds
-    pool_size: 10
-    min_idle_conns: 5
-  
-  # Universal client configuration (for cluster/sentinel/standalone)
-  universal:
-    enabled: false
-    addresses:
-      - localhost:6379
-    password: ""
-    db: 0
-    prefix: "app:"
-    timeout: 5  # seconds
-    dial_timeout: 5  # seconds
-    read_timeout: 3  # seconds
-    write_timeout: 3  # seconds
-    max_retries: 3
-    min_retry_backoff: 8  # milliseconds
-    max_retry_backoff: 512  # milliseconds
-    pool_size: 10
-    min_idle_conns: 5
     
-    # Cluster specific configuration
-    cluster_mode: false
+    # Network and Address Configuration
+    # Network type: "tcp" or "unix"
+    # Default: "tcp"
+    network: tcp
+    
+    # Address formatted as host:port (required field)
+    # Default: none (must be specified)
+    addr: localhost:6379
+    
+    # Authentication Configuration
+    # Username for Redis 6+ ACL authentication
+    # Default: "" (empty)
+    username: ""
+    
+    # Password for Redis authentication
+    # Default: "" (empty)
+    password: ""
+    
+    # Database and Client Identification
+    # Database number to select (0-15 for default Redis)
+    # Default: 0
+    db: 0
+    
+    # Client name set via CLIENT SETNAME command (maps to ClientName field)
+    # Default: "" (empty)
+    client_name: ""
+    
+    # Protocol Configuration
+    # RESP protocol version (2 or 3)
+    # Default: 3
+    protocol: 3
+    
+    # Timeout Configuration (Go duration strings: "5s", "500ms", etc. Special: -1=no timeout, -2=disable)
+    # Timeout for establishing new connections
+    # Default: "5s"
+    dial_timeout: "5s"
+    
+    # Timeout for socket reads (use -1 for no timeout, -2 to disable SetReadDeadline)
+    # Default: "3s"
+    read_timeout: "3s"
+    
+    # Timeout for socket writes (use -1 for no timeout, -2 to disable SetWriteDeadline)
+    # Default: "3s"
+    write_timeout: "3s"
+    
+    # Whether client respects context timeouts and deadlines
+    # Default: false
+    context_timeout_enabled: false
+    
+    # Retry Configuration
+    # Maximum number of retries before giving up (-1 disables retries)
+    # Default: 3
+    max_retries: 3
+    
+    # Minimum backoff between retries (-1 disables)
+    # Default: "8ms"
+    min_retry_backoff: "8ms"
+    
+    # Maximum backoff between retries (-1 disables)
+    # Default: "512ms"
+    max_retry_backoff: "512ms"
+    
+    # Connection Pool Configuration
+    # Pool type: true=FIFO (first-in-first-out), false=LIFO (last-in-first-out)
+    # Default: false
+    pool_fifo: false
+    
+    # Base number of socket connections
+    # Default: 10 * runtime.GOMAXPROCS(0)
+    pool_size: 10
+    
+    # Time client waits for connection when pool is busy
+    # Default: ReadTimeout + 1 second
+    pool_timeout: "4s"
+    
+    # Minimum number of idle connections (useful when establishing new connection is slow)
+    # Default: 0
+    min_idle_conns: 0
+    
+    # Maximum number of idle connections
+    # Default: 0 (no limit)
+    max_idle_conns: 0
+    
+    # Maximum number of connections allocated by pool (0=no limit)
+    # Default: 0
+    max_active_conns: 0
+    
+    # Maximum time a connection may be idle (0=no limit, -1=disable check)
+    # Default: "30m"
+    conn_max_idle_time: "30m"
+    
+    # Maximum time a connection may be reused (0=no limit)
+    # Default: "0s"
+    conn_max_lifetime: "0s"
+    
+    # TLS Configuration object (*tls.Config). When set, TLS will be negotiated
+    # Default: null (no TLS)
+    tls:
+      # Client certificate file path for TLS connection
+      # Default: "" (no client cert)
+      cert_file: ""
+      
+      # Client private key file path for TLS connection
+      # Default: "" (no client key)
+      key_file: ""
+      
+      # Skip certificate verification (INSECURE - only for development)
+      # Default: false
+      insecure_skip_verify: false
+    
+    # Advanced Client Options
+    # Disable CLIENT SETINFO command on connect
+    # Default: false
+    disable_identity: false
+    
+    # Suffix added to client name for identification
+    # Default: "" (empty)
+    identity_suffix: ""
+    
+    # Enable unstable RESP3 mode for Redis Search module
+    # Default: false
+    unstable_resp3: false
+
+  # Universal client configuration (redis.UniversalOptions)
+  # Supports single-node, cluster, and sentinel Redis deployments
+  universal:
+    # Enable or disable universal Redis client
+    # Default: false
+    enabled: false
+    
+    # Address Configuration
+    # List of host:port addresses. Can be single address or seed list for cluster/sentinel
+    # Default: none (must be specified)
+    addrs:
+      - localhost:6379
+    
+    # Authentication Configuration
+    # Username for Redis 6+ ACL authentication
+    # Default: "" (empty)
+    username: ""
+    
+    # Password for Redis authentication
+    # Default: "" (empty)
+    password: ""
+    
+    # Username for Sentinel authentication (if different from Redis)
+    # Default: "" (empty)
+    sentinel_username: ""
+    
+    # Password for Sentinel authentication (if different from Redis)
+    # Default: "" (empty)
+    sentinel_password: ""
+    
+    # Database and Client Identification
+    # Database number to select (only for single-node and failover clients)
+    # Default: 0
+    db: 0
+    
+    # Client name set via CLIENT SETNAME command (maps to ClientName field)
+    # Default: "" (empty)
+    client_name: ""
+    
+    # Protocol Configuration
+    # RESP protocol version (2 or 3)
+    # Default: 3
+    protocol: 3
+    
+    # Timeout Configuration (Go duration strings: "5s", "500ms", etc. Special: -1=no timeout, -2=disable)
+    # Timeout for establishing new connections
+    # Default: "5s"
+    dial_timeout: "5s"
+    
+    # Timeout for socket reads (use -1 for no timeout, -2 to disable SetReadDeadline)
+    # Default: "3s"
+    read_timeout: "3s"
+    
+    # Timeout for socket writes (use -1 for no timeout, -2 to disable SetWriteDeadline)
+    # Default: "3s"
+    write_timeout: "3s"
+    
+    # Whether client respects context timeouts and deadlines
+    # Default: false
+    context_timeout_enabled: false
+    
+    # Retry Configuration
+    # Maximum number of retries before giving up (-1 disables retries)
+    # Default: 3
+    max_retries: 3
+    
+    # Minimum backoff between retries (-1 disables)
+    # Default: "8ms"
+    min_retry_backoff: "8ms"
+    
+    # Maximum backoff between retries (-1 disables)
+    # Default: "512ms"
+    max_retry_backoff: "512ms"
+    
+    # Connection Pool Configuration
+    # Pool type: true=FIFO (first-in-first-out), false=LIFO (last-in-first-out)
+    # Default: false
+    pool_fifo: false
+    
+    # Base number of socket connections per node
+    # Default: 10 * runtime.GOMAXPROCS(0)
+    pool_size: 10
+    
+    # Time client waits for connection when pool is busy
+    # Default: ReadTimeout + 1 second
+    pool_timeout: "4s"
+    
+    # Minimum number of idle connections per node
+    # Default: 0
+    min_idle_conns: 0
+    
+    # Maximum number of idle connections per node
+    # Default: 0
+    max_idle_conns: 0
+    
+    # Maximum number of connections per node (0=no limit)
+    # Default: 0
+    max_active_conns: 0
+    
+    # Maximum time a connection may be idle (0=no limit)
+    # Default: "30m"
+    conn_max_idle_time: "30m"
+    
+    # Maximum time a connection may be reused (0=no limit)
+    # Default: "0s"
+    conn_max_lifetime: "0s"
+    
+    # TLS Configuration object (*tls.Config). When set, TLS will be negotiated
+    # Default: null (no TLS)
+    tls:
+      # Client certificate file path for TLS connection
+      # Default: "" (no client cert)
+      cert_file: ""
+      
+      # Client private key file path for TLS connection
+      # Default: "" (no client key)
+      key_file: ""
+      
+      # Skip certificate verification (INSECURE - only for development)
+      # Default: false
+      insecure_skip_verify: false
+    
+    # Cluster-Specific Options
+    # Maximum number of redirects to follow for cluster commands
+    # Default: 3
     max_redirects: 3
     
-    # Sentinel specific configuration
-    sentinel_mode: false
+    # Enable read-only mode (routes read commands to slave nodes)
+    # Default: false
+    read_only: false
+    
+    # Route commands based on node latency
+    # Default: false
+    route_by_latency: false
+    
+    # Route commands randomly across nodes (recommended for clusters)
+    # Default: false
+    route_randomly: true
+    
+    # Sentinel/Failover Options
+    # Name of the sentinel master (required for failover clients)
+    # Default: ""
     master_name: "mymaster"
+    
+    # Advanced Client Options
+    # Disable CLIENT SETINFO command on connect
+    # Default: false
+    disable_identity: false
+    
+    # Suffix added to client name for identification
+    # Default: "" (empty)
+    identity_suffix: ""
+    
+    # Enable unstable RESP3 mode for Redis Search module
+    # Default: false
+    unstable_resp3: false
+    
+    # Force cluster mode even with single address (e.g., AWS Elasticache)
+    # Default: false
+    is_cluster_mode: false

@@ -1,0 +1,40 @@
+{
+    "redis": {
+        "client": {
+            "enabled": true,
+            "network": "tcp",
+            "addr": "localhost:6379",
+            "username": "",
+            "password": "",
+            "db": 0,
+            "client_name": "test-client",
+            "protocol": 2,
+            "dial_timeout": "5s",
+            "read_timeout": "3s",
+            "write_timeout": "3s",
+            "pool_size": 10,
+            "pool_timeout": "4s",
+            "min_idle_conns": 3,
+            "max_idle_conns": 5,
+            "conn_max_idle_time": "30m",
+            "conn_max_lifetime": "1h",
+            "max_retries": 3,
+            "min_retry_backoff": "8ms",
+            "max_retry_backoff": "512ms"
+        },
+        "universal": {
+            "enabled": false,
+            "addrs": [
+                "localhost:6379"
+            ],
+            "username": "",
+            "password": "",
+            "db": 0,
+            "client_name": "",
+            "protocol": 2,
+            "dial_timeout": "5s",
+            "read_timeout": "3s",
+            "write_timeout": "3s"
+        }
+    }
+}

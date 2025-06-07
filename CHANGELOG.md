@@ -2,6 +2,41 @@
 
 ## [Unreleased]
 
+## v0.1.3 - 2025-06-07
+
+### Added
+- Thêm thư mục `testdata` với các file cấu hình mẫu để testing
+- Thêm support cho RESP protocol version configuration
+- Thêm context timeout controls và connection management improvements
+- Thêm TLS configuration với certificate validation
+- Thêm client identification và naming capabilities
+
+### Changed
+- **BREAKING**: Chuẩn hóa lại toàn bộ struct Config theo Go Redis v9.9.0 standards
+- **BREAKING**: Tối ưu hóa ServiceProvider với improved error handling và validation
+- **BREAKING**: Tinh gọn lại Manager interface và implementation
+- Cải thiện connection pool management với FIFO/LIFO options
+- Nâng cấp validation logic cho Redis configuration
+- Cải thiện error messages và panic handling trong ServiceProvider
+- Cải thiện resource management và connection cleanup
+
+### Removed
+- Xóa bỏ các file test tạm thời để tái cấu trúc (sẽ được thêm lại trong phiên bản tiếp theo)
+- Xóa bỏ documentation files để cập nhật toàn diện (sẽ được thêm lại)
+- Xóa bỏ README.md để viết lại hoàn toàn
+
+### Fixed
+- Sửa lỗi connection timeout handling
+- Sửa lỗi resource leak trong connection management
+- Sửa lỗi panic khi ServiceProvider boot với invalid configuration
+- Sửa lỗi TLS certificate validation
+
+### Technical Debt
+- Refactor toàn bộ codebase để tuân theo Go Redis v9.9.0 best practices
+- Cải thiện code organization và naming conventions
+- Tối ưu memory usage và garbage collection
+- Improve thread safety và concurrent access handling
+
 ## v0.1.2 - 2025-06-04
 
 ### Added

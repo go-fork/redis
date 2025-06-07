@@ -1,0 +1,55 @@
+{
+    "redis": {
+        "client": {
+            "enabled": true,
+            "network": "tcp",
+            "addr": "localhost:6379",
+            "username": "testuser",
+            "password": "testpass",
+            "db": 1,
+            "client_name": "complex-test-client",
+            "protocol": 3,
+            "dial_timeout": "10s",
+            "read_timeout": "5s",
+            "write_timeout": "5s",
+            "pool_size": 20,
+            "pool_timeout": "6s",
+            "min_idle_conns": 5,
+            "max_idle_conns": 10,
+            "conn_max_idle_time": "45m",
+            "conn_max_lifetime": "2h",
+            "max_retries": 5,
+            "min_retry_backoff": "16ms",
+            "max_retry_backoff": "1s",
+            "tls_config": {
+                "insecure_skip_verify": false,
+                "server_name": "redis.example.com"
+            }
+        },
+        "universal": {
+            "enabled": true,
+            "addrs": [
+                "localhost:6379",
+                "localhost:6380",
+                "localhost:6381"
+            ],
+            "username": "universal-user",
+            "password": "universal-pass",
+            "db": 2,
+            "client_name": "complex-universal-client",
+            "protocol": 3,
+            "dial_timeout": "8s",
+            "read_timeout": "4s",
+            "write_timeout": "4s",
+            "pool_size": 15,
+            "pool_timeout": "5s",
+            "min_idle_conns": 4,
+            "max_idle_conns": 8,
+            "conn_max_idle_time": "40m",
+            "conn_max_lifetime": "90m",
+            "max_retries": 4,
+            "min_retry_backoff": "12ms",
+            "max_retry_backoff": "800ms"
+        }
+    }
+}
