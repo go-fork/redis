@@ -265,7 +265,7 @@ func (c *Config) Options() *redis.Options {
 
 	// Configure TLS if specified
 	if client.TLS != nil {
-		tlsConfig, err := client.TLS.buildTLSConfig()
+		tlsConfig, err := client.TLS.BuildTLSConfig()
 		if err == nil {
 			opts.TLSConfig = tlsConfig
 		}
@@ -318,7 +318,7 @@ func (c *Config) UniversalOptions() *redis.UniversalOptions {
 
 	// Configure TLS if specified
 	if universal.TLS != nil {
-		tlsConfig, err := universal.TLS.buildTLSConfig()
+		tlsConfig, err := universal.TLS.BuildTLSConfig()
 		if err == nil {
 			opts.TLSConfig = tlsConfig
 		}
@@ -327,8 +327,8 @@ func (c *Config) UniversalOptions() *redis.UniversalOptions {
 	return opts
 }
 
-// buildTLSConfig creates a tls.Config from TLSConfig.
-func (t *TLSConfig) buildTLSConfig() (*tls.Config, error) {
+// BuildTLSConfig creates a tls.Config from TLSConfig.
+func (t *TLSConfig) BuildTLSConfig() (*tls.Config, error) {
 	if t == nil {
 		return nil, nil
 	}
@@ -439,6 +439,11 @@ func (c *ClientConfig) Validate() error {
 		return errors.New("ClientConfig cannot be nil")
 	}
 
+	// Skip validation if disabled
+	if !c.Enabled {
+		return nil
+	}
+
 	// Validate network type
 	if c.Network != "" && c.Network != "tcp" && c.Network != "unix" {
 		return fmt.Errorf("invalid network type: %s, must be 'tcp' or 'unix'", c.Network)
@@ -487,7 +492,7 @@ func (c *ClientConfig) Validate() error {
 
 	// Validate TLS configuration if present
 	if c.TLS != nil {
-		if err := c.TLS.validate(); err != nil {
+		if err := c.TLS.Validate(); err != nil {
 			return fmt.Errorf("TLS configuration error: %w", err)
 		}
 	}
@@ -498,6 +503,11 @@ func (c *ClientConfig) Validate() error {
 func (c *UniversalConfig) Validate() error {
 	if c == nil {
 		return errors.New("UniversalConfig cannot be nil")
+	}
+
+	// Skip validation if disabled
+	if !c.Enabled {
+		return nil
 	}
 
 	// Validate addresses
@@ -559,7 +569,7 @@ func (c *UniversalConfig) Validate() error {
 
 	// Validate TLS configuration if present
 	if c.TLS != nil {
-		if err := c.TLS.validate(); err != nil {
+		if err := c.TLS.Validate(); err != nil {
 			return fmt.Errorf("TLS configuration error: %w", err)
 		}
 	}
@@ -591,7 +601,7 @@ func (c *Config) Validate() error {
 }
 
 // validate validates the TLS configuration.
-func (t *TLSConfig) validate() error {
+func (t *TLSConfig) Validate() error {
 	if t == nil {
 		return nil
 	}
